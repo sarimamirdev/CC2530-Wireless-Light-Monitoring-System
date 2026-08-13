@@ -25,13 +25,13 @@ This project implements a **wireless light monitoring system** using two **TI CC
 
 ## 📸 Images
 
-![ADC Light Intensity Circuit](Images/CC2530_ADC_Light_Intensity_Code.jpg)
+![ADC Light Intensity Circuit](Images/CC2530_ADC_Light_Intensity_Code.jpeg)
 *ADC Light Intensity Circuit Diagram*
 
-![BasicRF Light Monitoring](Images/CC2530_BasicRF_Light_Monitoring_Code.jpg)
+![BasicRF Light Monitoring](Images/CC2530_BasicRF_Light_Monitoring_Code.jpeg)
 *BasicRF Light Monitoring System*
 
-![Wireless Light Monitor](Images/CC2530_Wireless_Light_Monitoring_Hardware.jpg)
+![Wireless Light Monitor](Images/CC2530_Wireless_Light_Monitoring_Hardware.jpeg)
 *Wireless Light Monitoring System Overview*
 ## 🛠️ Hardware Requirements
 

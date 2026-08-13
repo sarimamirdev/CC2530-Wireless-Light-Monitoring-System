@@ -18,25 +18,24 @@
 #include <stdlib.h>
 
 /*----------------------------------------------------------------------------
- * DEFINES - Network Configuration
+ * NETWORK CONFIGURATION
  *----------------------------------------------------------------------------*/
 
-#define MY_ADDR         0x0001      // Board A (Receiver) address
-#define DEST_ADDR       0x0002      // Board B (Transmitter) address
-#define CHANNEL         20          // RF Channel (11-26)
+#define MY_ADDR         0x0001      // Board A (Receiver)
+#define DEST_ADDR       0x0002      // Board B (Transmitter)
+#define CHANNEL         20          // RF Channel
 #define PAN_ID          0x2301      // Personal Area Network ID
 #define UART_BAUDRATE   115200
 
 /*----------------------------------------------------------------------------
  * STUDENT INFORMATION
- * Modify these values as required.
  *----------------------------------------------------------------------------*/
 
 #define STUDENT_NAME    "Zhiyong"
 #define STUDENT_CLASS   "2401"
 
 /*----------------------------------------------------------------------------
- * VOLTAGE THRESHOLDS
+ * LIGHT LEVEL THRESHOLDS
  *----------------------------------------------------------------------------*/
 
 #define BRIGHT_THRESHOLD    1.5f
@@ -48,13 +47,9 @@
 
 static basicRfCfg_t rfConfig;
 
-/* RF receive buffer */
 uint8_t rxBuffer[100];
-
-/* Number of bytes received */
 uint8_t rxLen;
 
-/* Converted light sensor voltage */
 float voltage;
 
 /*----------------------------------------------------------------------------
@@ -66,18 +61,16 @@ void Control_LEDs(float voltage);
 void Send_To_PC(float voltage);
 
 /*----------------------------------------------------------------------------
- * RF INITIALIZATION
+ * BASICRF INITIALIZATION
  *----------------------------------------------------------------------------*/
 
 void BasicRf_Init(void)
 {
-    /* Configure BasicRF */
     rfConfig.myAddr = MY_ADDR;
     rfConfig.panId = PAN_ID;
     rfConfig.channel = CHANNEL;
     rfConfig.ackRequest = TRUE;
 
-    /* Initialize BasicRF */
     basicRfInit(&rfConfig);
 
     /* Enable RF receive mode */
@@ -85,41 +78,34 @@ void BasicRf_Init(void)
 }
 
 /*----------------------------------------------------------------------------
- * CONTROL LEDs BASED ON VOLTAGE THRESHOLDS
+ * LED CONTROL
  *
- * LEDs are active-low:
- * LOW  = LED ON
- * HIGH = LED OFF
+ * Active-low LEDs:
+ * LOW  = ON
+ * HIGH = OFF
  *
- * Voltage > 1.5V:
- *     Bright light  -> Both LEDs OFF
- *
- * 0.5V - 1.5V:
- *     Moderate light -> LED1 ON, LED2 OFF
- *
- * Voltage < 0.5V:
- *     Dark -> Both LEDs ON
+ * > 1.5V       -> Bright   -> Both LEDs OFF
+ * 0.5V - 1.5V -> Moderate -> LED1 ON
+ * < 0.5V       -> Dark     -> Both LEDs ON
  *----------------------------------------------------------------------------*/
 
 void Control_LEDs(float voltage)
 {
-    /* Bright light - both LEDs OFF */
     if (voltage > BRIGHT_THRESHOLD)
     {
+        /* Bright light */
         P1_0 = 1;
         P1_1 = 1;
     }
-
-    /* Dark - both LEDs ON */
     else if (voltage < DARK_THRESHOLD)
     {
+        /* Dark */
         P1_0 = 0;
         P1_1 = 0;
     }
-
-    /* Moderate light - LED1 ON, LED2 OFF */
     else
     {
+        /* Moderate light */
         P1_0 = 0;
         P1_1 = 1;
     }
@@ -148,72 +134,60 @@ void Send_To_PC(float voltage)
 }
 
 /*----------------------------------------------------------------------------
- * MAIN FUNCTION - RECEIVER MODE
+ * MAIN FUNCTION
  *----------------------------------------------------------------------------*/
 
 void main(void)
 {
-    /*----------------------------------------------------------------------
-     * Initialize hardware
-     *----------------------------------------------------------------------*/
-
+    /* Initialize hardware */
     halBoardInit();
     halMcuInit();
 
     /* Initialize UART */
     halUartInit(0, UART_BAUDRATE);
 
-    /* Initialize LEDs as outputs and turn them OFF */
+    /* Initialize LEDs as OFF */
     P1_0 = 1;
     P1_1 = 1;
 
     /* Initialize BasicRF */
     BasicRf_Init();
 
-    /*----------------------------------------------------------------------
-     * Main loop
-     *----------------------------------------------------------------------*/
-
     while (1)
     {
-        /* Check whether a BasicRF packet has been received */
+        /* Check for incoming RF packet */
         if (basicRfPacketIsReady())
         {
             /*
-             * Receive packet.
-             *
-             * Leave one byte free for the null terminator because
-             * atof() expects a null-terminated string.
+             * Leave one byte free for '\0'
+             * so the received data can safely
+             * be processed as a C string.
              */
             rxLen = basicRfReceive(
                 rxBuffer,
                 sizeof(rxBuffer) - 1
             );
 
-            /* Make sure valid data was received */
             if (rxLen > 0)
             {
-                /* Null-terminate received string */
+                /* Null-terminate received data */
                 rxBuffer[rxLen] = '\0';
 
                 /* Convert received ASCII voltage to float */
                 voltage = atof((char *)rxBuffer);
 
-                /* Send measured voltage to PC */
+                /* Send data to PC */
                 Send_To_PC(voltage);
 
-                /* Update LEDs according to voltage */
+                /* Update LEDs */
                 Control_LEDs(voltage);
             }
 
-            /*
-             * Make sure receiver remains enabled after
-             * processing the packet.
-             */
+            /* Ensure receiver remains active */
             basicRfReceiveOn();
         }
 
-        /* Allow other tasks to run */
+        /* Small delay */
         halMcuWaitMs(10);
     }
 }

@@ -1,1 +1,301 @@
+================================================================================
+                    CC2530 Wireless Light Monitoring System
+                          UART Configuration Settings
+================================================================================
 
+===============================================================================
+  1. UART COMMUNICATION SETTINGS
+===============================================================================
+
+PARAMETER               VALUE           DESCRIPTION
+---------------------- --------------- ---------------------------------------
+Baud Rate              115200          Bits per second (Standard for CC2530)
+Data Bits              8               8-bit data frames
+Stop Bits              1               1 stop bit per frame
+Parity                 None            No parity bit
+Flow Control           None            No hardware flow control
+Bit Order              LSB First       Least significant bit transmitted first
+UART Mode              Asynchronous    Standard UART communication
+
+===============================================================================
+  2. TERMINAL SOFTWARE SETUP
+===============================================================================
+
+2.1 TERA TERM (Recommended)
+---------------------------------------------------------------------------
+1. File → New Connection
+2. Select "Serial"
+3. Choose COM port (e.g., COM3, COM4, etc.)
+4. Click "OK"
+5. Setup → Serial Port:
+   - Baud Rate: 115200
+   - Data: 8 bit
+   - Parity: none
+   - Stop: 1 bit
+   - Flow Control: none
+6. Setup → Terminal:
+   - Terminal Size: 80 x 24
+   - ANSI Color: unchecked
+7. File → Log (optional - for saving data)
+
+2.2 PUTTY
+---------------------------------------------------------------------------
+1. Open PuTTY
+2. Connection Type: Serial
+3. Serial Line: COM port (e.g., COM3)
+4. Speed (Baud Rate): 115200
+5. Click "Open"
+6. For logging: Session → Logging → "All session output"
+
+2.3 REALTERM
+---------------------------------------------------------------------------
+1. Open RealTerm
+2. Port → COM Port: Select your COM port
+3. Baud Rate: 115200
+4. Bits: 8
+5. Parity: None
+6. Stop: 1
+7. Click "Open Port"
+8. For logging: Capture → Start Capture
+
+2.4 ARDUINO SERIAL MONITOR
+---------------------------------------------------------------------------
+1. Open Arduino IDE
+2. Tools → Port → Select COM port
+3. Tools → Serial Monitor (or Ctrl+Shift+M)
+4. Set baud rate to 115200 (bottom right)
+
+===============================================================================
+  3. EXPECTED UART OUTPUT FORMAT
+===============================================================================
+
+The illumination data collected by Student [STUDENT_NAME] of IoT Class [CLASS] is: [VOLTAGE]V
+
+EXAMPLE OUTPUT:
+-------------------------------------------------------------------------------
+The illumination data collected by Student Zhiyong of IoT Class 2401 is: 1.234V
+The illumination data collected by Student Zhiyong of IoT Class 2401 is: 0.876V
+The illumination data collected by Student Zhiyong of IoT Class 2401 is: 2.145V
+The illumination data collected by Student Zhiyong of IoT Class 2401 is: 1.056V
+The illumination data collected by Student Zhiyong of IoT Class 2401 is: 0.543V
+-------------------------------------------------------------------------------
+
+===============================================================================
+  4. HARDWARE UART CONNECTIONS
+===============================================================================
+
+4.1 BOARD A (Receiver) to USB-Serial Adapter
+---------------------------------------------------------------------------
+BOARD A (CC2530)      ->      USB-SERIAL ADAPTER      ->      PC
+-------------------            -------------------            ----------
+P0.2 (UART TX)        ----->   RX (Input)
+P0.3 (UART RX)        <-----   TX (Output)
+GND                   ----->   GND
+VDD (3.3V)            ----->   VCC (Optional - if adapter supports)
+
+4.2 USB-SERIAL ADAPTER RECOMMENDED
+---------------------------------------------------------------------------
+- FTDI FT232RL
+- CP2102
+- CP2104
+- PL2303
+- CH340G
+- Any 3.3V compatible USB-Serial adapter
+
+4.3 USB-SERIAL ADAPTER JUMPER SETTINGS
+---------------------------------------------------------------------------
+If your adapter has voltage selection jumpers:
+    - Set to 3.3V (NOT 5V) - CC2530 is 3.3V device
+    - If fixed 5V, use a level shifter (TX/RX voltage divider)
+
+===============================================================================
+  5. WINDOWS COM PORT IDENTIFICATION
+===============================================================================
+
+5.1 CHECK COM PORT IN DEVICE MANAGER
+---------------------------------------------------------------------------
+1. Right-click "This PC" → Manage
+2. Device Manager → Ports (COM & LPT)
+3. Look for "USB Serial Port (COMx)" or similar
+4. Note the COM number (e.g., COM3, COM4, etc.)
+
+5.2 COMMON COM PORT MAPPINGS
+---------------------------------------------------------------------------
+USB Adapter Type          Typical COM Port
+----------------------   -----------------
+FTDI FT232RL              COM3, COM4, COM5
+CP2102                    COM3, COM4
+CH340G                    COM3, COM4, COM5
+PL2303                    COM3, COM4
+
+5.3 MAC OS / LINUX PORT IDENTIFICATION
+---------------------------------------------------------------------------
+MAC OS:
+    ls /dev/tty.*
+    Look for: /dev/tty.usbserial-xxx or /dev/tty.SLAB_USBtoUART
+
+LINUX:
+    ls /dev/ttyUSB*
+    Look for: /dev/ttyUSB0, /dev/ttyUSB1, etc.
+
+===============================================================================
+  6. TROUBLESHOOTING UART ISSUES
+===============================================================================
+
+6.1 NO UART OUTPUT
+---------------------------------------------------------------------------
+| SYMPTOM                                    | SOLUTION                          |
+|--------------------------------------------|-----------------------------------|
+| No data in terminal                        | Check COM port selection          |
+| Terminal shows nothing                     | Verify baud rate is 115200        |
+| Data appears but is garbage               | Check parity (should be None)     |
+| Board connected but no output             | Check TX/RX connections           |
+| Power LED off                             | Check power supply (3.3V)         |
+| USB-Serial not recognized                 | Install/Update drivers            |
+
+6.2 GARBAGE CHARACTERS
+---------------------------------------------------------------------------
+| SYMPTOM                                    | SOLUTION                          |
+|--------------------------------------------|-----------------------------------|
+| Random characters displayed               | Check baud rate (115200)          |
+| Strange symbols                           | Verify data bits (8)              |
+| Missing characters                        | Check stop bits (1)               |
+| Non-English characters                   | Set parity to None                |
+
+6.3 COMMON MISTAKES
+---------------------------------------------------------------------------
+| MISTAKE                                    | FIX                               |
+|--------------------------------------------|-----------------------------------|
+| Using 9600 baud instead of 115200         | Change to 115200                  |
+| TX connected to TX (instead of RX)        | Swap TX/RX connections            |
+| Using 5V USB-Serial adapter               | Use 3.3V adapter or level shifter |
+| Wrong COM port selected                   | Check Device Manager              |
+| Flow control enabled                      | Disable flow control              |
+
+===============================================================================
+  7. UART CODE REFERENCE
+===============================================================================
+
+7.1 UART INITIALIZATION (From BoardA_Receiver.c)
+---------------------------------------------------------------------------
+void main(void)
+{
+    // Initialize UART at 115200 baud
+    halUartInit(0, UART_BAUDRATE);  // UART_BAUDRATE = 115200
+    
+    // Rest of initialization code...
+}
+
+7.2 UART SEND FUNCTION (From BoardA_Receiver.c)
+---------------------------------------------------------------------------
+void Send_To_PC(float voltage)
+{
+    char output[150];
+    
+    sprintf(output, "The illumination data collected by Student %s of IoT Class %s is: %.3fV\r\n", 
+            STUDENT_NAME, STUDENT_CLASS, voltage);
+    
+    halUartWrite((uint8_t*)output, strlen(output));
+}
+
+7.3 UART BAUD RATE CALCULATION
+---------------------------------------------------------------------------
+#define UART_BAUDRATE 115200
+
+// For CC2530, UART baud rate is calculated as:
+// BAUD_E = log2( (F_clk * 8) / (32 * BaudRate) )
+// BAUD_M = (F_clk / (2^(BAUD_E) * 8 * BaudRate)) - 1
+
+===============================================================================
+  8. TERMINAL TIPS & TRICKS
+===============================================================================
+
+8.1 LOGGING DATA TO FILE
+---------------------------------------------------------------------------
+Tera Term:
+    File → Log → Choose filename → Start
+    (Creates .log file with timestamped data)
+
+PuTTY:
+    Session → Logging → "All session output"
+    Choose filename → Open
+
+RealTerm:
+    Capture → Start Capture
+    Choose filename → Save
+
+8.2 COLOR-CODED OUTPUT (If using ANSI terminal)
+---------------------------------------------------------------------------
+Add ANSI escape codes for colored output:
+
+    sprintf(output, "\033[32mThe illumination data\033[0m collected by Student %s is: %.3fV\r\n",
+            STUDENT_NAME, voltage);
+
+8.3 AUTO-SCROLL SETTINGS
+---------------------------------------------------------------------------
+Tera Term:
+    Setup → Terminal → "Auto scroll" (checkbox)
+    "Cursor" options for better visibility
+
+PuTTY:
+    Window → Lines of scrollback: 2000 (default)
+    Increase for more history
+
+===============================================================================
+  9. QUICK REFERENCE CARD
+===============================================================================
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                          UART QUICK REFERENCE                              │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  BAUD RATE:  115200                                                         │
+│  DATA BITS:  8                                                              │
+│  PARITY:     None                                                           │
+│  STOP BITS:  1                                                              │
+│  FLOW CTRL:  None                                                           │
+│  TX PIN:     P0.2 (Board A)                                                │
+│  RX PIN:     P0.3 (Board A)                                                │
+│  GND:        Common Ground                                                  │
+│                                                                             │
+│  USB-SERIAL VOLTAGE: 3.3V (DO NOT USE 5V)                                  │
+│                                                                             │
+│  TERMINAL COMMANDS:                                                         │
+│  Tera Term:  File → New Connection → Serial → COMx → 115200                │
+│  PuTTY:      Serial → COMx → 115200 → Open                                  │
+│                                                                             │
+│  EXPECTED OUTPUT:                                                           │
+│  "The illumination data collected by Student [Name] of IoT Class          │
+│   [Class] is: [Voltage]V"                                                  │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+===============================================================================
+  10. ADDITIONAL RESOURCES
+===============================================================================
+
+CC2530 UART Documentation:
+    - CC2530 Datasheet (Section: UART)
+    - TI Application Note AN039 (Serial Communication)
+    - BasicRF User Guide (Chapter: UART)
+
+Terminal Software Downloads:
+    - Tera Term: https://teratermproject.github.io/
+    - PuTTY: https://www.putty.org/
+    - RealTerm: https://realterm.sourceforge.net/
+
+USB-Serial Adapter Drivers:
+    - FTDI: https://www.ftdichip.com/Drivers/
+    - CP210x: https://www.silabs.com/developers/usb-to-uart-bridge-vcp-drivers
+    - CH340: https://www.wch-ic.com/downloads/CH341SER_EXE.html
+
+===============================================================================
+  VERSION HISTORY
+===============================================================================
+Version     Date        Author      Changes
+--------   ---------   ---------   -------------------------------------------
+1.0         2026-07     Sarim A.   Initial release
+
+===============================================================================
+  END OF DOCUMENT
+===============================================================================

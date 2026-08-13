@@ -88,7 +88,14 @@ CC2530-Wireless-Light-Monitoring/
 
 ## 📸 Images
 
-![System Overview](Images/System_Overview.jpg)
+![ADC Light Intensity](Images/CC2530_ADC_Light_Intensity_Circuit.jpg)
+*ADC Light Intensity Circuit Diagram*
+
+![BasicRF Light Monitoring](Images/CC2530_BasicRF_Light_Monitoring.jpg)
+*BasicRF Light Monitoring System*
+
+![Wireless Light Monitor](Images/CC2530_Wireless_Light_Monitor.jpg)
+*Wireless Light Monitoring System Overview*
 
 ## 📄 License
 

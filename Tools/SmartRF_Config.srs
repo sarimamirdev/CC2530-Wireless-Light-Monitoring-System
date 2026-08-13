@@ -1,1 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+----------------------------------------------------------------------------
+SmartRF Studio 7 Configuration File
+Device: CC2530
+Project: CC2530 Wireless Light Monitoring System
+Description: BasicRF configuration for point-to-point communication
+Channel: 20 (2430 MHz)
+PAN ID: 0x2301
+----------------------------------------------------------------------------
+-->
 
+<!DOCTYPE configuration SYSTEM "C:/Program Files (x86)/Texas Instruments/SmartRF Tools/SmartRF Studio 7/config/xml/configdata.dtd"[]>
+<dcpanelconfiguration>
+    <!-- Device Information -->
+    <Devicename>CC2530</Devicename>
+    <Description>CC2530 BasicRF Configuration - Channel 20, 2430 MHz</Description>
+    <configversion>1.0</configversion>
+    
+    <!-- Register Settings for CC2530 -->
+    <registersettings>
+        <!-- System Clock and Power Management -->
+        <register>
+            <Name>SLEEPCMD</Name>
+            <Value>0x00</Value>
+        </register>
+        <register>
+            <Name>PCON</Name>
+            <Value>0x00</Value>
+        </register>
+        
+        <!-- Frequency Control - Channel 20 (2430 MHz) -->
+        <register>
+            <Name>FREQCTRL</Name>
+            <Value>0x1A</Value>
+            <Description>Channel 20: 2405 + 5*(20-11) = 2430 MHz</Description>
+        </register>
+        
+        <!-- Frequency Synthesizer Calibration -->
+        <register>
+            <Name>FSCAL1</Name>
+            <Value>0x03</Value>
+        </register>
+        
+        <!-- Automatic Gain Control (AGC) -->
+        <register>
+            <Name>AGCCTRL1</Name>
+            <Value>0x15</Value>
+        </register>
+        <register>
+            <Name>AGCCTRL2</Name>
+            <Value>0xFE</Value>
+        </register>
+        
+        <!-- Clear Channel Assessment (CCA) -->
+        <register>
+            <Name>CCACTRL0</Name>
+            <Value>0xF8</Value>
+        </register>
+        
+        <!-- TX Power Settings -->
+        <register>
+            <Name>TXCTRL</Name>
+            <Value>0x90</Value>
+            <Description>TX power: 1 dBm (default)</Description>
+        </register>
+        
+        <!-- RF Front-End Configuration -->
+        <register>
+            <Name>FRMFILT0</Name>
+            <Value>0x0D</Value>
+        </register>
+        <register>
+            <Name>FRMCTRL0</Name>
+            <Value>0x60</Value>
+        </register>
+        
+        <!-- GPIO Configuration -->
+        <!-- P0 Configuration -->
+        <register>
+            <Name>P0</Name>
+            <Value>0x02</Value>
+            <Description>P0.0 = ADC input, P0.1-P0.7 = GPIO</Description>
+        </register>
+        <register>
+            <Name>P0DIR</Name>
+            <Value>0xFF</Value>
+            <Description>P0.0-P0.7 = Input</Description>
+        </register>
+        <register>
+            <Name>P0SEL</Name>
+            <Value>0x01</Value>
+            <Description>P0.0 = Peripheral (ADC), P0.1-P0.7 = GPIO</Description>
+        </register>
+        
+        <!-- P1 Configuration -->
+        <register>
+            <Name>P1</Name>
+            <Value>0x09</Value>
+            <Description>P1.0 and P1.1 = LED outputs (Active Low)</Description>
+        </register>
+        <register>
+            <Name>P1DIR</Name>
+            <Value>0x1F</Value>
+            <Description>P1.0-P1.4 = Output, P1.5-P1.7 = Input</Description>
+        </register>
+        
+        <!-- P2 Configuration -->
+        <register>
+            <Name>P2</Name>
+            <Value>0x0F</Value>
+        </register>
+        <register>
+            <Name>P2DIR</Name>
+            <Value>0x00</Value>
+        </register>
+        
+        <!-- I/O Pin Mapping -->
+        <register>
+            <Name>PERCFG</Name>
+            <Value>0x00</Value>
+            <Description>UART0 on P0.2/P0.3</Description>
+        </register>
+        
+        <!-- UART Configuration -->
+        <register>
+            <Name>U0CSR</Name>
+            <Value>0x80</Value>
+            <Description>UART mode enabled</Description>
+        </register>
+        <register>
+            <Name>U0GCR</Name>
+            <Value>0x06</Value>
+            <Description>115200 baud (BAUD_M = 6)</Description>
+        </register>
+        <register>
+            <Name>U0BAUD</Name>
+            <Value>0x40</Value>
+            <Description>115200 baud (BAUD_E = 64)</Description>
+        </register>
+        
+        <!-- Interrupt Configuration -->
+        <register>
+            <Name>IEN0</Name>
+            <Value>0x00</Value>
+        </register>
+        <register>
+            <Name>IEN1</Name>
+            <Value>0x00</Value>
+        </register>
+        <register>
+            <Name>IEN2</Name>
+            <Value>0x00</Value>
+        </register>
+    </registersettings>
+    
+    <!-- RF Parameters -->
+    <rfparameters>
+        <Property role="46" name="m_cmbFrontends">0</Property>
+        <Description>RF Frontend: No external PA/LNA</Description>
+    </rfparameters>
+    
+    <!-- Device Control Panel Settings -->
+    <dcpanel>
+        <Property role="44" name="m_chkRegView">2</Property>
+        <Property role="44" name="m_chkCmdView">0</Property>
+        <Property role="44" name="m_chkRfParameters">2</Property>
+        <Property role="37" name="m_tabUserMode">1</Property>
+        <Property role="33" name="m_easyModeSettings">-1</Property>
+        <Property role="33" name="m_typicalSettings">-1</Property>
+        <Property role="37" name="m_testFuncPanel">2</Property>
+    </dcpanel>
+    
+    <!-- Continuous TX Settings -->
+    <conttx>
+        <Property role="45" name="m_rbtModulated">1</Property>
+        <Property role="45" name="m_rbtUnmodulated">0</Property>
+        <Property role="46" name="m_cmbDataFormat">-1</Property>
+        <Property role="44" name="m_chkFreqSweep">0</Property>
+        <Property role="44" name="m_chkChanSweep">0</Property>
+    </conttx>
+    
+    <!-- Continuous RX Settings -->
+    <contrx>
+        <Property role="44" name="m_chkFreqSweep">0</Property>
+        <Property role="44" name="m_chkChanSweep">0</Property>
+    </contrx>
+    
+    <!-- Packet TX Settings -->
+    <packettx>
+        <Property role="45" name="m_rbtPktMode">1</Property>
+        <Property role="45" name="m_rbtFixedPkt">1</Property>
+        <Property role="44" name="m_chkPktCRC">1</Property>
+        <Property role="44" name="m_chkAppendRSSI">0</Property>
+        <Property role="46" name="m_cmbDataRate">0</Property>
+        <Property role="46" name="m_cmbPktLen">64</Property>
+        <Property role="46" name="m_cmbNumPackets">0</Property>
+        <Property role="44" name="m_chkLoopback">0</Property>
+        <Property role="44" name="m_chkFIFO">0</Property>
+        <Property role="44" name="m_chkInfinite">1</Property>
+    </packettx>
+    
+    <!-- Packet RX Settings -->
+    <packetrx>
+        <Property role="45" name="m_rbtPktMode">1</Property>
+        <Property role="45" name="m_rbtFixedPkt">1</Property>
+        <Property role="44" name="m_chkPktCRC">1</Property>
+        <Property role="46" name="m_cmbDataRate">0</Property>
+        <Property role="46" name="m_cmbPktLen">64</Property>
+        <Property role="44" name="m_chkInfinite">1</Property>
+        <Property role="44" name="m_chkFIFO">0</Property>
+    </packetrx>
+</dcpanelconfiguration>
